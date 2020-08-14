@@ -9,6 +9,7 @@
 .container button{
     padding: 20px 50px;
     border: none;
+    outline: none;
     margin:20px 0px;
     border-radius: 5px;
     background-color: transparent;
