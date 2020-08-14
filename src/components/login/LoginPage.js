@@ -17,12 +17,12 @@ function LoginPage({ fetching, loggedIn, doGoogleLoginAction, logOutAction }) {
     <div className={styles.container}>
       {loggedIn ? (
         <>
-          <h1>Cierra tu sesión</h1>
+          <h2>Cierra tu sesión</h2>
           <button onClick={logOut}>Cerrar Sesión</button>
         </>
       ) : (
         <>
-          <h1>Inicia Sesión con Google</h1>
+          <h2>Inicia Sesión con Google</h2>
           <button onClick={doLogin}>Iniciar</button>
         </>
       )}

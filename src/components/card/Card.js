@@ -15,7 +15,7 @@ export default function Card({
     return (
         <div className={styles.container}>
             <div className={styles.card}>
-                <img alt="rick" src={image} />
+                <img alt={name} src={image} />
                 <p className={styles.name}>
                     {name}
                 </p>

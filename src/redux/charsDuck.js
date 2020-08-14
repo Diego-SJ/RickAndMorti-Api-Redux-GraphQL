@@ -8,6 +8,7 @@ const initialData = {
   array: [],
   current: {},
   favorites: [],
+  nextPage: 33,
 };
 // const URL = 'https://rickandmortyapi.com/api/character';
 const client = new ApolloClient({
@@ -24,9 +25,13 @@ const GET_FAVS = 'GET_FAVS';
 const GET_FAVS_SUCCESS = 'GET_FAVS_SUCCESS';
 const GET_FAVS_ERROR = 'GET_FAVS_ERROR';
 
+const UPDATE_PAGE = 'UPDATE_PAGE';
+
 // * reducers
 export default function reducer(state = initialData, action) {
   switch (action.type) {
+    case UPDATE_PAGE:
+      return { ...state, nextPage: action.payload };
     case GET_FAVS:
       return { ...state, fetching: true };
     case GET_FAVS_ERROR:
@@ -104,6 +109,10 @@ export const addToFavoritesAction = () => (dispatch, getState) => {
 export const removeCharacterAction = () => (dispatch, getState) => {
   const { array } = getState().characters;
   array.shift();
+  if (!array.length) {
+    getCharactersAction()(dispatch, getState);
+    return;
+  }
   dispatch({
     type: REMOVE_CHARACTER,
     payload: [...array],
@@ -112,8 +121,13 @@ export const removeCharacterAction = () => (dispatch, getState) => {
 
 export const getCharactersAction = () => async (dispatch, getState) => {
   const query = gql`
-    {
-      characters {
+    query($pages: Int) {
+      characters(page: $pages) {
+        info {
+          pages
+          next
+          prev
+        }
         results {
           name
           image
@@ -126,23 +140,31 @@ export const getCharactersAction = () => async (dispatch, getState) => {
     type: GET_CHARACTERS,
   });
 
+  const { nextPage } = getState().characters;
+
   return client
     .query({
       query,
+      variables: {
+        pages: nextPage,
+      },
     })
-    .then((res, error) => {
+    .then(({ data, error }) => {
       if (error) {
         dispatch({
           type: GET_CHARACTERS_ERROR,
           payload: error,
         });
         return;
-      } else {
-        dispatch({
-          type: GET_CHARACTERS_SUCCESS,
-          payload: res.data.characters.results,
-        });
       }
+      dispatch({
+        type: GET_CHARACTERS_SUCCESS,
+        payload: data.characters.results,
+      });
+      dispatch({
+        type: UPDATE_PAGE,
+        payload: data.characters.info.next ? data.characters.info.next : 1,
+      });
     });
 
   // return axios
