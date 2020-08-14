@@ -8,7 +8,7 @@ const initialData = {
   array: [],
   current: {},
   favorites: [],
-  nextPage: 33,
+  nextPage: null,
 };
 // const URL = 'https://rickandmortyapi.com/api/character';
 const client = new ApolloClient({
