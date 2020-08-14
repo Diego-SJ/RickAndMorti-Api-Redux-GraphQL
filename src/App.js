@@ -5,7 +5,7 @@ import Routes from './Routes';
 
 function App() {
   return (
-    <div>
+    <div className="my-app">
       <div className="nav-bar">
         <NavLink className="link" activeClassName="active" exact to="/">
           Inicio
